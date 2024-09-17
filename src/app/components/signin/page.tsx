@@ -1,30 +1,35 @@
-'use client';
-
-import Link from 'next/link';
+"use client"
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import { FaAngleLeft } from 'react-icons/fa6';
+import Link from 'next/link';
+import Image from 'next/image';
 
-export default function LoginPage() {
+interface SignInRequestBody {
+    email: string;
+    password: string;
+}
+
+export default function SignInPage() {
     const router = useRouter();
 
-    const [user, setUser] = React.useState({
+    const [user, setUser] = useState<SignInRequestBody>({
         email: '',
         password: '',
     });
 
-    const [buttonDisabled, setButtonDisabled] = React.useState(false);
-    const [loading, setLoading] = React.useState(false);
+    const [buttonDisabled, setButtonDisabled] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
     const [emailError, setEmailError] = useState<string>('');
     const [serverError, setServerError] = useState<string>('');
 
-    const validateEmail = (email: string) => {
+    const validateEmail = (email: string): boolean => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
 
-    const onLogin = async () => {
+    const onSignIn = async (): Promise<void> => {
         if (!validateEmail(user.email)) {
             setEmailError('Please enter a valid email address');
             return;
@@ -33,12 +38,13 @@ export default function LoginPage() {
         try {
             setLoading(true);
             setServerError(''); // Clear previous errors
-            const response = await axios.post('/api/users/login', user);
-            console.log('Login successful', response.data);
+            const response = await axios.post('/api/users/signin', user);
+            console.log('Sign in successful', response.data);
             router.push('/dashboard');
-        } catch (error: any) {
-            console.log('Login failed', error.message);
-            setServerError(error.response?.data?.message || 'Login failed. Please try again.');
+        } catch (error: unknown) {
+            console.log('Failed to sign in', error);
+            const errorMessage = (error as Error).message || 'Sign in failed. Please try again.';
+            setServerError(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -61,15 +67,18 @@ export default function LoginPage() {
     }, [user.email]);
 
     return (
-        <div
-            className="min-h-screen flex items-center justify-center bg-cover bg-center"
-            style={{ backgroundImage: 'url(https://www.amritam.co/bg-1.jpg)' }}
-        >
+        <div className="min-h-screen flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: 'url(https://www.amritam.co/bg-1.jpg)' }}>
             <div className="h-full form-container bg-white shadow-lg rounded-lg p-8">
                 <div className="flex justify-center">
-                    <img className="w-[200px]" src="https://www.amritam.co/amritam.png" alt="Logo" />
+                    <Image
+                        src="https://www.amritam.co/amritam.png"
+                        alt="Logo"
+                        width={200}
+                        height={200} // Adjust width and height as needed
+                        className="w-[200px]"
+                    />
                 </div>
-                <h5 className="text-lg font-bold text-center mb-4 mx-7">Sign in to your account</h5>
+                <h5 className="text-lg font-bold text-center mb-4 mx-7">Sign In to Your Account</h5>
 
                 <form className="space-y-6">
                     <div className="input-wrapper">
@@ -97,13 +106,16 @@ export default function LoginPage() {
 
                     <div className="social-container mt-4 text-center">
                         <Link href="/components/signup" className="text-sm text-gray-600">
-                            Don’t have an account? <b className="text-red-500 hover:underline">Sign Up</b>
+                            <p className="text-sm text-gray-600">
+                                Don&apos;t have an account? <b className="text-red-500 hover:underline">Sign Up</b>
+                            </p>
+
                         </Link>
                     </div>
 
                     <button
                         type="button"
-                        onClick={onLogin}
+                        onClick={onSignIn}
                         className={`lgbtn w-full p-3 text-white font-bold rounded-lg ${buttonDisabled ? 'bg-gray-400' : 'bg-green-800 hover:bg-green-950 hover:scale-105 transition duration-300 ease-in-out'}`}
                         disabled={buttonDisabled}
                     >

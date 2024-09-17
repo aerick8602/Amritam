@@ -1,15 +1,17 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Home() {
   return (
     <div className="h-screen bg-gradient-to-b from-green-600 to-green-950 flex flex-col justify-center items-center text-white text-center">
-      <img
-        className="w-[350px] mb-8 hover:scale-125 transition-transform duration-1000 ease-in-out blur-md invert drop-shadow-xl md:filter-none "
+      <Image
+        className="w-[350px] mb-8 hover:scale-125 transition-transform duration-1000 ease-in-out blur-md invert drop-shadow-xl md:filter-none"
         src="https://www.amritam.co/amritam.png"
-        // src="https://www.amritam.co/amritam-white.png"
         alt="Amritam Logo"
+        width={350}
+        height={200} // Adjust height as needed
       />
       <h1 className="flex gap-12 text-5xl md:text-7xl font-bold mb-4">
         <p className="hover:scale-110 transition-transform duration-500 ease-in-out bg-gradient-to-r from-green-100 via-white to-green-500 text-transparent bg-clip-text">

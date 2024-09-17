@@ -1,47 +1,51 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcryptjs from 'bcryptjs';
-
 import { connectToMongoDB } from '@/connection/db';
 import User from '@/models/user';
 
-
+// Connect to MongoDB
 connectToMongoDB();
+
+// Define the type for the request body
+interface SignUpRequestBody {
+    username: string;
+    email: string;
+    password: string;
+}
 
 // POST route (Create a new user inside the DB)
 export async function POST(request: NextRequest) {
     try {
-        // grab data from body
-        const reqBody = await request.json();
+        // Grab data from body
+        const reqBody: SignUpRequestBody = await request.json();
 
-        // destructure the incoming variables
+        // Destructure the incoming variables
         const { username, email, password } = reqBody;
 
         // REMOVE IN PRODUCTION
         console.log(reqBody);
 
+        // Check if user already exists
         const user = await User.findOne({ email });
-
         if (user) {
             return NextResponse.json(
-                {
-                    error: 'This user already exists',
-                },
+                { error: 'This user already exists' },
                 { status: 400 }
             );
         }
 
-        // hash password
+        // Hash password
         const salt = await bcryptjs.genSalt(10);
         const hashedPassword = await bcryptjs.hash(password, salt);
 
-        // create a new user
+        // Create a new user
         const newUser = new User({
             username,
             email,
             password: hashedPassword,
         });
 
-        // save it inside the DB
+        // Save it inside the DB
         const savedUser = await newUser.save();
 
         return NextResponse.json({
@@ -49,7 +53,9 @@ export async function POST(request: NextRequest) {
             success: true,
             savedUser,
         });
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    } catch (error) {
+        // Type the error object correctly
+        const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred';
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }

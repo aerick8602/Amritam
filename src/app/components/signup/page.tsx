@@ -1,31 +1,37 @@
-'use client';
-
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+"use client"
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import { FaAngleLeft } from 'react-icons/fa6';
+import Link from 'next/link';
+import Image from 'next/image';
+
+interface SignUpRequestBody {
+    username: string;
+    email: string;
+    password: string;
+}
 
 export default function SignUpPage() {
     const router = useRouter();
 
-    const [user, setUser] = React.useState({
+    const [user, setUser] = useState<SignUpRequestBody>({
         username: '',
         email: '',
         password: '',
     });
 
-    const [buttonDisabled, setButtonDisabled] = React.useState(false);
-    const [loading, setLoading] = React.useState(false);
+    const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
     const [emailError, setEmailError] = useState<string>('');
     const [serverError, setServerError] = useState<string>('');
 
-    const validateEmail = (email: string) => {
+    const validateEmail = (email: string): boolean => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     };
 
-    const onSignUp = async () => {
+    const onSignUp = async (): Promise<void> => {
         if (!validateEmail(user.email)) {
             setEmailError('Please enter a valid email address');
             return;
@@ -37,9 +43,10 @@ export default function SignUpPage() {
             const response = await axios.post('/api/users/signup', user);
             console.log('Sign up successful', response.data);
             router.push('/dashboard');
-        } catch (error: any) {
-            console.log('Failed to sign up', error.message);
-            setServerError(error.response?.data?.message || 'Sign up failed. Please try again.');
+        } catch (error: unknown) {
+            console.log('Failed to sign up', error);
+            const errorMessage = (error as Error).message || 'Sign up failed. Please try again.';
+            setServerError(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -62,13 +69,16 @@ export default function SignUpPage() {
     }, [user.email]);
 
     return (
-        <div
-            className="min-h-screen flex items-center justify-center bg-cover bg-center"
-            style={{ backgroundImage: 'url(https://www.amritam.co/bg-1.jpg)' }}
-        >
+        <div className="min-h-screen flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: 'url(https://www.amritam.co/bg-1.jpg)' }}>
             <div className="h-full form-container bg-white shadow-lg rounded-lg p-8">
                 <div className="flex justify-center">
-                    <img className="w-[200px]" src="https://www.amritam.co/amritam.png" alt="Logo" />
+                    <Image
+                        src="https://www.amritam.co/amritam.png"
+                        alt="Logo"
+                        width={200}
+                        height={200} // Adjust width and height as needed
+                        className="w-[200px]"
+                    />
                 </div>
                 <h5 className="text-lg font-bold text-center mb-4 mx-7">Create your free account</h5>
 
@@ -108,7 +118,10 @@ export default function SignUpPage() {
 
                     <div className="social-container mt-4 text-center">
                         <Link href="/components/signin" className="text-sm text-gray-600">
-                            Already have an account? <b className="text-red-500 hover:underline">Log In</b>
+                            <p className="text-sm text-gray-600">
+                                Already have an account? <b className="text-red-500 hover:underline">Sign In</b>
+                            </p>
+
                         </Link>
                     </div>
 
