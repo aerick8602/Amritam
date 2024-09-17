@@ -1,0 +1,37 @@
+- .env.local
+- .eslintrc.json
+- .gitignore
+- next-env.d.ts
+- next.config.mjs
+- package-lock.json
+- package.json
+- postcss.config.mjs
+- README.md
+- src
+  - app
+    - api
+      - users
+        - signin
+          - route.ts
+        - signup
+          - route.ts
+    - components
+      - signin
+        - page.tsx
+      - signup
+        - page.tsx
+    - dashboard
+      - page.tsx
+    - favicon.ico
+    - fonts
+      - GeistMonoVF.woff
+      - GeistVF.woff
+    - globals.css
+    - layout.tsx
+    - page.tsx
+  - connection
+    - db.ts
+  - models
+    - user.ts
+- tailwind.config.ts
+- tsconfig.json
