@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaAngleLeft } from "react-icons/fa6";
+import { FaAngleLeft } from "react-icons/fa";
 import Link from "next/link";
 import Image from "next/image";
 import { ClipLoader } from "react-spinners";
@@ -11,8 +11,15 @@ interface SignInRequestBody {
     password: string;
 }
 
-export default function SignInPage() {
+interface AxiosError {
+    response?: {
+        data?: {
+            message?: string;
+        };
+    };
+}
 
+export default function SignInPage() {
     const [user, setUser] = useState<SignInRequestBody>({
         email: '',
         password: '',
@@ -43,16 +50,16 @@ export default function SignInPage() {
             });
             console.log("Sign in successful", response.data);
             window.location.href = 'https://www.amritam.co/';
-        } catch (error: unknown) {
+        } catch (error) {
             console.log("Failed to sign in", error);
-            const responseError = (error as any)?.response?.data?.message;
+            const axiosError = error as AxiosError;
+            const responseError = axiosError.response?.data?.message;
             const errorMessage = responseError || "Invalid credentials. Please try again.";
             setServerError(errorMessage);
         } finally {
             setLoading(false);
         }
     };
-
 
     useEffect(() => {
         if (user.email.length > 0 && user.password.length > 0) {

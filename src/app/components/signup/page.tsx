@@ -12,6 +12,14 @@ interface SignUpRequestBody {
     password: string;
 }
 
+interface AxiosError {
+    response?: {
+        data?: {
+            message?: string;
+        };
+    };
+}
+
 export default function SignUpPage() {
     const [user, setUser] = useState<SignUpRequestBody>({
         username: "",
@@ -43,7 +51,8 @@ export default function SignUpPage() {
             window.location.href = 'https://www.amritam.co/';
         } catch (error: unknown) {
             console.log("Failed to sign up", error);
-            const responseError = (error as any)?.response?.data?.message;
+            const axiosError = error as AxiosError;
+            const responseError = axiosError.response?.data?.message;
             const errorMessage = responseError || "An unexpected error occurred. Please try again later.";
             setServerError(errorMessage);
         } finally {
@@ -70,7 +79,6 @@ export default function SignUpPage() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-cover bg-center" style={{ backgroundImage: 'url(https://www.amritam.co/bg-1.jpg)' }}>
             {loading ? (
-
                 <div className="flex justify-center items-center min-h-screen">
                     <ClipLoader color="green" size={50} />
                 </div>
