@@ -32,6 +32,10 @@ export default function Home() {
           Explore
         </button>
       </Link>
+      <footer className="mt-auto text-sm md:text-base text-gray-300 py-4">
+        <p>&copy; {new Date().getFullYear()} Amritam. All rights reserved.</p>
+        <p>Developed by Ayush Katiyar</p>
+      </footer>
     </div>
   );
 }
