@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 export default function Home() {
   return (
-    <div className="h-screen bg-gradient-to-b from-green-600 to-green-950 flex flex-col justify-center items-center text-white text-center">
+    <div className="h-screen bg-gradient-to-b from-green-600 to-green-950 flex flex-col justify-center items-center text-white text-center relative">
       <Image
         className="w-[350px] mb-8 hover:scale-125 transition-transform duration-1000 ease-in-out blur-md invert drop-shadow-xl md:filter-none"
         src="https://www.amritam.co/amritam.png"
@@ -32,9 +32,12 @@ export default function Home() {
           Explore
         </button>
       </Link>
-      <footer className="mt-auto text-sm md:text-base text-gray-300 py-4">
-        <p>&copy; {new Date().getFullYear()} Amritam. All rights reserved.</p>
-        <p>Developed by Ayush Katiyar</p>
+
+
+      <footer className="fixed bottom-0 left-0 w-full py-4 shadow-lg bg-gradient-to-b from-green-600 to-green-950 text-gray-300 text-sm md:text-base">
+
+        <p className="absolute left-4">&copy; {new Date().getFullYear()} Amritam. All rights reserved.</p>
+        <p className="text-center">Developed by Ayush Katiyar</p>
       </footer>
     </div>
   );
